@@ -39,21 +39,21 @@ namespace Sample
             //DestructureExamples_GenerateLogs();
 
 
-            //string destructureTransformedType = "Sample.Account";
-            //string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
-            //Log.Logger = new LoggerConfiguration()
-            //    .Destructure.ByTransforming(transformedType, transformation)
-            //    .WriteTo.Console().CreateLogger();
-            //DestructureExamples_GenerateLogs();
-
-
             string destructureTransformedType = "Sample.Account";
             string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
-            string destructurePredicate = "t => false";
             Log.Logger = new LoggerConfiguration()
-                .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
+                .Destructure.ByTransforming(destructureTransformedType, destructureTransformation)
                 .WriteTo.Console().CreateLogger();
             DestructureExamples_GenerateLogs();
+
+
+            //string destructureTransformedType = "Sample.Account";
+            //string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
+            //string destructurePredicate = "t => false";
+            //Log.Logger = new LoggerConfiguration()
+            //    .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
+            //    .WriteTo.Console().CreateLogger();
+            //DestructureExamples_GenerateLogs();
 
 
             Console.WriteLine($"\nPress any key...");
