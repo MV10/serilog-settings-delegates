@@ -1,0 +1,16 @@
+﻿{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console" ],
+    "WriteTo": [ "Console" ],
+    "Filter": [
+      {
+        "Name": "ByIncludingOnly",
+        "Args": { "inclusionPredicate": "Matching.WithProperty<string>(\"Word\", w => w.StartsWith(\"a\"))" }
+      },
+      {
+        "Name": "ByExcluding",
+        "Args": { "exclusionPredicate": "Matching.WithProperty<string>(\"Word\", w => w.Equals(\"ad\"))" }
+      }
+    ]
+  }
+}

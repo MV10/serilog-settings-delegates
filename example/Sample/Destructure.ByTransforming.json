@@ -1,0 +1,15 @@
+﻿{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console" ],
+    "WriteTo": [ "Console" ],
+    "Destructure": [
+      {
+        "Name": "ByTransforming",
+        "Args": {
+          "transformedType": "System.Account",
+          "transformation": "a => new { a.id, a.Username, a.AccountType }"
+        }
+      }
+    ]
+  }
+}
