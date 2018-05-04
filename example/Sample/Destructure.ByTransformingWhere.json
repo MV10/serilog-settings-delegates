@@ -4,7 +4,7 @@
     "WriteTo": [ "Console" ],
     "Destructure": [
       {
-        "Name": "ByTransforming",
+        "Name": "ByTransformingWhere",
         "Args": {
           "predicate": "t => typeof(Account).Equals(t)",
           "transformedType": "Sample.Account",
