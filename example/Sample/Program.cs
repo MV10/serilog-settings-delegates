@@ -3,6 +3,8 @@ using Serilog;
 using Serilog.Settings.Delegates;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Sample
 {
@@ -32,35 +34,60 @@ namespace Sample
 
             // *** NOT WORKING YET: Serilog.Settings.Configuration doesn't have an ApplyDestructure feature yet
             //Configure("Destructure.ByTransforming", "Log the account information excluding the user's password.");
-            //DestructureExamples_GenerateLogs();
+            //TransformationExamples_GenerateLogs();
+
 
             // *** NOT WORKING YET: Serilog.Settings.Configuration doesn't have an ApplyDestructure feature yet
             //Configure("Destructure.ByTransformingWhere", "Log the account information excluding the user's password with predicate control.");
-            //DestructureExamples_GenerateLogs();
-
-
-            string destructureTransformedType = "Sample.Account";
-            string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
-            Log.Logger = new LoggerConfiguration()
-                .Destructure.ByTransforming(destructureTransformedType, destructureTransformation)
-                .WriteTo.Console().CreateLogger();
-            DestructureExamples_GenerateLogs();
+            //TransformationExamples_GenerateLogs();
 
 
             //string destructureTransformedType = "Sample.Account";
             //string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
-            //string destructurePredicate = "t => false";
+            //Log.Logger = new LoggerConfiguration()
+            //    .Destructure.ByTransforming(destructureTransformedType, destructureTransformation)
+            //    .WriteTo.Console().CreateLogger();
+            //TransformationExamples_GenerateLogs();
+
+
+            //Log.Logger = new LoggerConfiguration()
+            //    .Destructure.ByTransforming<Account>(a => new { a.id, a.Username, a.AccountType })
+            //    .WriteTo.Console().CreateLogger();
+            //TransformationExamples_GenerateLogs();
+
+
+            //Log.Logger = new LoggerConfiguration()
+            //    .Destructure.ByTransforming<String>(a => new { a.GetType().Namespace })
+            //    .WriteTo.Console().CreateLogger();
+            //Log.Information("Foo: {@SayWhat}", typeof(String));
+
+
+            //string destructurePredicate = "t => typeof(Account).Equals(t)";
+            //string destructureTransformedType = "Sample.Account";
+            //string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
             //Log.Logger = new LoggerConfiguration()
             //    .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
             //    .WriteTo.Console().CreateLogger();
-            //DestructureExamples_GenerateLogs();
+            //TransformationExamples_GenerateLogs(); // will not match (no transformation)
+            //Log.Information("For a String type: {@Type}", typeof(String)); // this will match (will apply transformation)
 
 
+            string destructurePredicate = "t => typeof(Type).IsAssignableFrom(t)";
+            string destructureTransformedType = "System.Type";
+            string destructureTransformation = "n => new { n.Namespace }";
+            Log.Logger = new LoggerConfiguration()
+                .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
+                .WriteTo.Console().CreateLogger();
+            TransformationExamples_GenerateLogs(); // will not match (no transformation)
+            Log.Information("For a String type: {@Type}", typeof(String)); // this will match (will apply transformation)
+
+
+            Log.CloseAndFlush();
             Console.WriteLine($"\nPress any key...");
             Console.ReadKey();
         }
 
-        static void DestructureExamples_GenerateLogs()
+        static void TransformationExamples_GenerateLogs()
         {
             Console.WriteLine("\nThe Destructure examples log a series of account login events.\n");
             var logins = new List<Account>
@@ -75,7 +102,6 @@ namespace Sample
             {
                 Log.Information("Login for {@User}", acct);
             }
-            Log.CloseAndFlush();
         }
 
         static void FilterExamples_GenerateLogs()
@@ -86,7 +112,6 @@ namespace Sample
             {
                 Log.Information("Have some latin! {Word}", s);
             }
-            Log.CloseAndFlush();
         }
 
         static void Configure(string filename, string description)
