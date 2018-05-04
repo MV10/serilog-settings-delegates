@@ -6,8 +6,8 @@
       {
         "Name": "ByTransforming",
         "Args": {
-          "predicate": "t => false",
-          "transformedType": "System.Account",
+          "predicate": "t => typeof(Account).Equals(t)",
+          "transformedType": "Sample.Account",
           "transformation": "a => new { a.id, a.Username, a.AccountType }"
         }
       }
