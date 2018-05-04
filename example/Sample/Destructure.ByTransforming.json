@@ -6,7 +6,7 @@
       {
         "Name": "ByTransforming",
         "Args": {
-          "transformedType": "System.Account",
+          "transformedType": "Sample.Account",
           "transformation": "a => new { a.id, a.Username, a.AccountType }"
         }
       }
