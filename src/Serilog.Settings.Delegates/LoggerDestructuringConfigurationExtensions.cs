@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using Serilog.Configuration;
 
 namespace Serilog.Settings.Delegates
@@ -9,14 +11,24 @@ namespace Serilog.Settings.Delegates
     {
         public static LoggerConfiguration ByTransforming(
             this LoggerDestructuringConfiguration loggerConfiguration,
-            string transformedType,
+            string returnType,
             string transformation)
         {
             if(loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
-            if(transformedType == null) throw new ArgumentNullException(nameof(transformedType));
+            if(returnType == null) throw new ArgumentNullException(nameof(returnType));
             if(transformation == null) throw new ArgumentNullException(nameof(transformation));
+            if(returnType.Equals("dynamic")) throw new ArgumentException("Dynamic is not valid for transformedType.", nameof(returnType));
 
-            var compiledTransformation = CompileTransformation(transformedType, transformation);
+            dynamic compiledTransformation;
+
+            try
+            {
+                compiledTransformation = CompileTransformation(returnType, transformation);
+            }
+            catch(CompilationErrorException ex)
+            {
+                throw new ArgumentException($"Destructure.ByTransforming transformation failed to compile.\nTransformation: {transformation}\nException: {ex.Message}");
+            }
 
             return loggerConfiguration.ByTransforming(compiledTransformation);
         }
@@ -24,30 +36,52 @@ namespace Serilog.Settings.Delegates
         public static LoggerConfiguration ByTransformingWhere(
             this LoggerDestructuringConfiguration loggerConfiguration,
             string predicate,
-            string transformedType,
+            string returnType,
             string transformation)
         {
             if(loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if(predicate == null) throw new ArgumentNullException(nameof(predicate));
-            if(transformedType == null) throw new ArgumentNullException(nameof(transformedType));
+            if(returnType == null) throw new ArgumentNullException(nameof(returnType));
             if(transformation == null) throw new ArgumentNullException(nameof(transformation));
+            if(returnType.Equals("dynamic")) throw new ArgumentException("Dynamic is not valid for transformedType.", nameof(returnType));
 
-            Func<Type, bool> compiledPredicate = CSharpScript.EvaluateAsync<Func<Type, bool>>
-                (predicate, ReflectionHelper.scriptOptions)
-                .GetAwaiter().GetResult();
+            Func<Type, bool> compiledPredicate;
+            dynamic compiledTransformation;
 
-            var compiledTransformation = CompileTransformation(transformedType, transformation);
+            try
+            {
+                compiledPredicate =
+                    CSharpScript.EvaluateAsync<Func<Type, bool>>
+                    (predicate, ReflectionHelper.scriptOptions)
+                    .GetAwaiter().GetResult();
+            }
+            catch(CompilationErrorException ex)
+            {
+                throw new ArgumentException($"Destructure.ByTransformingWhere predicate failed to compile.\nPredicate: {predicate}\nException: {ex.Message}");
+            }
+
+            try
+            {
+                compiledTransformation = CompileTransformation(returnType, transformation);
+            }
+            catch(CompilationErrorException ex)
+            {
+                throw new ArgumentException($"Destructure.ByTransformingWhere transformation failed to compile.\nTransformation: {transformation}\nException: {ex.Message}");
+            }
 
             return loggerConfiguration.ByTransformingWhere(compiledPredicate, compiledTransformation);
         }
 
-        private static dynamic CompileTransformation(string transformedType, string transformation)
+        private static dynamic CompileTransformation(string returnType, string transformation)
         {
             // get a Type that corresponds to namespace.type in transformedType
-            Type TValue = Type.GetType(transformedType) ??
+            Type TValue = Type.GetType(returnType) ??
                 AppDomain.CurrentDomain.GetAssemblies()
-                .Select(a => a.GetType(transformedType))
+                .Select(a => a.GetType(returnType))
                 .FirstOrDefault(t => t != null);
+
+            if(TValue == null)
+                throw new ArgumentException($"Destructure {nameof(returnType)} could not be resolved. Did you provide both namespace and type name?\nRequested {nameof(returnType)}: {returnType}");
 
             // get a representation of Func<TValue, object>
             Type funcType = typeof(Func<,>).MakeGenericType(new Type[] { TValue, typeof(object) });
@@ -58,7 +92,16 @@ namespace Serilog.Settings.Delegates
                 .MakeGenericMethod(funcType);
 
             // execute EvaluateAsync
-            dynamic evalTask = evalMethod.Invoke(null, new object[] { transformation, ReflectionHelper.scriptOptions, null, null, null });
+            dynamic evalTask;
+            try
+            {
+                evalTask = evalMethod.Invoke(null, new object[] { transformation, ReflectionHelper.scriptOptions, null, null, null });
+            }
+            catch(TargetInvocationException ex)
+            {
+                throw new ArgumentException($"Destructure transformation failed to compile.\nTransformation: {transformation}\nException: {ex.InnerException.Message}");
+            }
+
             dynamic compiledFunc = evalTask.GetAwaiter().GetResult();
 
             return compiledFunc;

@@ -52,19 +52,19 @@ namespace Sample
             //FilterExamples_GenerateLogs();
 
 
-            //string destructureTransformedType = "Sample.Account";
+            //string destructureReturnType = "Sample.Account";
             //string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
             //Log.Logger = new LoggerConfiguration()
-            //    .Destructure.ByTransforming(destructureTransformedType, destructureTransformation)
+            //    .Destructure.ByTransforming(destructureReturnType, destructureTransformation)
             //    .WriteTo.Console().CreateLogger();
             //TransformationExamples_GenerateLogs();
 
 
             //string destructurePredicate = "t => typeof(Type).IsAssignableFrom(t)";
-            //string destructureTransformedType = "System.Type";
+            //string destructureReturnType = "System.Type";
             //string destructureTransformation = "n => new { n.Namespace }";
             //Log.Logger = new LoggerConfiguration()
-            //    .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
+            //    .Destructure.ByTransformingWhere(destructurePredicate, destructureReturnType, destructureTransformation)
             //    .WriteTo.Console().CreateLogger();
             //TransformationExamples_GenerateLogs(); // will not match (no transformation)
             //Log.Information("For a String type: {@Type}", typeof(String)); // this will match (will apply transformation)

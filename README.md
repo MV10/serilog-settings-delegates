@@ -6,8 +6,8 @@ Four delegate-based methods are available.
 
 - `Filter.ByIncludingOnly(`_`inclusionPredicate`_`)`
 - `Filter.ByExcluding(`_`exclusionPredicate`_`)`
-- `Destructure.ByTransforming(`_`transformedType, transformation`_`)`
-- `Destructure.ByTransformingWhere(`_`predicate, transformedType, transformation`_`)`
+- `Destructure.ByTransforming(`_`returnType, transformation`_`)`
+- `Destructure.ByTransformingWhere(`_`predicate, returnType, transformation`_`)`
 
 All arguments are string values because they are intended to be populated from configuration data. The sample application in this repository demonstrates all methods both as code-based configuration (which would be of limited usefulness in practice) as well as loading various JSON configuration files.
 
@@ -22,11 +22,11 @@ Of course, you must respect the syntax of the configuration source you're using,
 
 - `"exclusionPredicate": "Matching.WithProperty<string>(\"Word\", w => w.Equals(\"klaatu\"))"`
 
-## Specifying Types
+## Specifying Return Type
 
-The destructure methods accept a `transformedType` argument. Use the fully-qualified name of the target type (i.e. namespace and type name). For example, the `Account` class defined in the `Sample` namespace in the repository's sample code is referenced as `Sample.Account`.
+The destructure methods require a `returnType` argument. Use the fully-qualified name of the target type (i.e. namespace and type name). For example, the `Account` class defined in the `Sample` namespace in the repository's sample code is referenced as `Sample.Account`.
 
-Due to language limitations, it is not possible to specify `dynamic` as the `transformedType` because it is not actually a type, even though it's possible to write code using the `dynamic` keyword in place of a generic type. For example, in code you can write `.Destrcture.ByTransforming<dynamic>(...)` and it will compile and run, but you cannot express this through configuration.
+Due to language limitations, it is not possible to specify `dynamic` as the `returnType` because it is not actually a type, even though it's possible to write code using the `dynamic` keyword in place of a generic type. For example, in code you can write `.Destrcture.ByTransforming<dynamic>(...)` and it will compile and run, but you cannot express this through reflection, which is used to represent the `returnType` named by configuration.
 
 ## Compatibility
 
@@ -89,7 +89,7 @@ The repository's sample code also includes examples of Destructure delegates. In
       {
         "Name": "ByTransforming",
         "Args": {
-          "transformedType": "Sample.Account",
+          "returnType": "Sample.Account",
           "transformation": "a => new { a.id, a.Username, a.AccountType }"
         }
       }
@@ -110,7 +110,7 @@ This example (also from the repository's sample code) applies the transformation
         "Name": "ByTransformingWhere",
         "Args": {
           "predicate": "t => typeof(Type).IsAssignableFrom(t)",
-          "transformedType": "System.Type",
+          "returnType": "System.Type",
           "transformation": "n => new { n.Namespace }"
         }
       }

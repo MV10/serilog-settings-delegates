@@ -7,7 +7,7 @@
         "Name": "ByTransformingWhere",
         "Args": {
           "predicate": "t => typeof(Type).IsAssignableFrom(t)",
-          "transformedType": "System.Type",
+          "returnType": "System.Type",
           "transformation": "n => new { n.Namespace }"
         }
       }
