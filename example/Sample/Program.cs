@@ -15,31 +15,41 @@ namespace Sample
             // Each example-block below is mutually exclusive
 
 
+            //Configure(
+            //    "Filter.ByIncludingOnly",
+            //    "Include any word beginning with \"a\"");
+            //FilterExamples_GenerateLogs();
+
+
+            Configure(
+                "Filter.ByIncludingOnly.ByExcluding",
+                "Include any word beginning with \"a\" except \"ad\"");
+            FilterExamples_GenerateLogs();
+
+
+            //Configure(
+            //    "Destructure.ByTransforming",
+            //    "Log the account information excluding the user's password.");
+            //TransformationExamples_GenerateLogs();
+
+
+            //Configure(
+            //    "Destructure.ByTransformingWhere",
+            //    "No transform of account data, but transform String to Type to emit namespace.");
+            //TransformationExamples_GenerateLogs(); // will not match (no transformation)
+            //Log.Information("For a String type: {@Type}", typeof(String)); // this will match (will apply transformation)
+
+
             // Configuration through code might be interesting in scenarios like receiving
-            // config information from a service client or loading from a database.
+            // config information from a service client or loading from a database. The following
+            // are equivalents of the various accompanying JSON configuration files.
+
+
             //string filterPredicate = "Matching.WithProperty<string>(\"Word\", w => w.StartsWith(\"a\"))";
             //Log.Logger = new LoggerConfiguration()
             //    .Filter.ByIncludingOnly(filterPredicate)
             //    .WriteTo.Console().CreateLogger();
             //FilterExamples_GenerateLogs();
-
-
-            //Configure("Filter.ByIncludingOnly", "Include any word beginning with \"a\"");
-            //FilterExamples_GenerateLogs();
-
-
-            //Configure("Filter.ByIncludingOnly.ByExcluding", "Include any word beginning with \"a\" except \"ad\"");
-            //FilterExamples_GenerateLogs();
-
-
-            // *** NOT WORKING YET: Serilog.Settings.Configuration doesn't have an ApplyDestructure feature yet
-            //Configure("Destructure.ByTransforming", "Log the account information excluding the user's password.");
-            //TransformationExamples_GenerateLogs();
-
-
-            // *** NOT WORKING YET: Serilog.Settings.Configuration doesn't have an ApplyDestructure feature yet
-            //Configure("Destructure.ByTransformingWhere", "Log the account information excluding the user's password with predicate control.");
-            //TransformationExamples_GenerateLogs();
 
 
             //string destructureTransformedType = "Sample.Account";
@@ -50,36 +60,14 @@ namespace Sample
             //TransformationExamples_GenerateLogs();
 
 
-            //Log.Logger = new LoggerConfiguration()
-            //    .Destructure.ByTransforming<Account>(a => new { a.id, a.Username, a.AccountType })
-            //    .WriteTo.Console().CreateLogger();
-            //TransformationExamples_GenerateLogs();
-
-
-            //Log.Logger = new LoggerConfiguration()
-            //    .Destructure.ByTransforming<String>(a => new { a.GetType().Namespace })
-            //    .WriteTo.Console().CreateLogger();
-            //Log.Information("Foo: {@SayWhat}", typeof(String));
-
-
-            //string destructurePredicate = "t => typeof(Account).Equals(t)";
-            //string destructureTransformedType = "Sample.Account";
-            //string destructureTransformation = "a => new { a.id, a.Username, a.AccountType }";
+            //string destructurePredicate = "t => typeof(Type).IsAssignableFrom(t)";
+            //string destructureTransformedType = "System.Type";
+            //string destructureTransformation = "n => new { n.Namespace }";
             //Log.Logger = new LoggerConfiguration()
             //    .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
             //    .WriteTo.Console().CreateLogger();
             //TransformationExamples_GenerateLogs(); // will not match (no transformation)
             //Log.Information("For a String type: {@Type}", typeof(String)); // this will match (will apply transformation)
-
-
-            string destructurePredicate = "t => typeof(Type).IsAssignableFrom(t)";
-            string destructureTransformedType = "System.Type";
-            string destructureTransformation = "n => new { n.Namespace }";
-            Log.Logger = new LoggerConfiguration()
-                .Destructure.ByTransformingWhere(destructurePredicate, destructureTransformedType, destructureTransformation)
-                .WriteTo.Console().CreateLogger();
-            TransformationExamples_GenerateLogs(); // will not match (no transformation)
-            Log.Information("For a String type: {@Type}", typeof(String)); // this will match (will apply transformation)
 
 
             Log.CloseAndFlush();

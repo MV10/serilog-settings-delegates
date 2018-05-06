@@ -6,9 +6,9 @@
       {
         "Name": "ByTransformingWhere",
         "Args": {
-          "predicate": "t => typeof(Account).Equals(t)",
-          "transformedType": "Sample.Account",
-          "transformation": "a => new { a.id, a.Username, a.AccountType }"
+          "predicate": "t => typeof(Type).IsAssignableFrom(t)",
+          "transformedType": "System.Type",
+          "transformation": "n => new { n.Namespace }"
         }
       }
     ]

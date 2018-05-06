@@ -14,12 +14,12 @@ namespace Serilog.Settings.Delegates
             if (loggerFilterConfiguration == null) throw new ArgumentNullException(nameof(loggerFilterConfiguration));
             if (exclusionPredicate == null) throw new ArgumentNullException(nameof(exclusionPredicate));
 
-            Func<LogEvent, bool> predicate = 
+            Func<LogEvent, bool> compiledPredicate = 
                 CSharpScript.EvaluateAsync<Func<LogEvent, bool>>
                 (exclusionPredicate, ReflectionHelper.scriptOptions)
                 .GetAwaiter().GetResult();
 
-            return loggerFilterConfiguration.ByExcluding(predicate);
+            return loggerFilterConfiguration.ByExcluding(compiledPredicate);
         }
 
         public static LoggerConfiguration ByIncludingOnly(
@@ -29,12 +29,12 @@ namespace Serilog.Settings.Delegates
             if (loggerFilterConfiguration == null) throw new ArgumentNullException(nameof(loggerFilterConfiguration));
             if (inclusionPredicate == null) throw new ArgumentNullException(nameof(inclusionPredicate));
 
-            Func<LogEvent, bool> predicate = 
+            Func<LogEvent, bool> compiledPredicate = 
                 CSharpScript.EvaluateAsync<Func<LogEvent, bool>>
                 (inclusionPredicate, ReflectionHelper.scriptOptions)
                 .GetAwaiter().GetResult();
 
-            return loggerFilterConfiguration.ByIncludingOnly(predicate);
+            return loggerFilterConfiguration.ByIncludingOnly(compiledPredicate);
         }
     }
 }
