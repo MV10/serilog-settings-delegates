@@ -13,4 +13,8 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Serilog.Settings.Delegates\Serilog.Settings.Delegates.csproj" />
+  </ItemGroup>
+
 </Project>

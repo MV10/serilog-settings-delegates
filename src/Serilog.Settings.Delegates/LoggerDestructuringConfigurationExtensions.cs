@@ -17,7 +17,7 @@ namespace Serilog.Settings.Delegates
             if(loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if(returnType == null) throw new ArgumentNullException(nameof(returnType));
             if(transformation == null) throw new ArgumentNullException(nameof(transformation));
-            if(returnType.Equals("dynamic")) throw new ArgumentException("Dynamic is not valid for transformedType.", nameof(returnType));
+            if(returnType.Equals("dynamic")) throw new ArgumentException("Dynamic is not a type.", nameof(returnType));
 
             dynamic compiledTransformation;
 
@@ -25,9 +25,9 @@ namespace Serilog.Settings.Delegates
             {
                 compiledTransformation = CompileTransformation(returnType, transformation);
             }
-            catch(CompilationErrorException ex)
+            catch(TargetInvocationException ex)
             {
-                throw new ArgumentException($"Destructure.ByTransforming transformation failed to compile.\nTransformation: {transformation}\nException: {ex.Message}");
+                throw new ArgumentException($"Destructure.ByTransforming transformation failed to compile.\nTransformation: {transformation}\nException: {ex.InnerException.Message}");
             }
 
             return loggerConfiguration.ByTransforming(compiledTransformation);
@@ -43,7 +43,7 @@ namespace Serilog.Settings.Delegates
             if(predicate == null) throw new ArgumentNullException(nameof(predicate));
             if(returnType == null) throw new ArgumentNullException(nameof(returnType));
             if(transformation == null) throw new ArgumentNullException(nameof(transformation));
-            if(returnType.Equals("dynamic")) throw new ArgumentException("Dynamic is not valid for transformedType.", nameof(returnType));
+            if(returnType.Equals("dynamic")) throw new ArgumentException("Dynamic is not a type.", nameof(returnType));
 
             Func<Type, bool> compiledPredicate;
             dynamic compiledTransformation;
@@ -64,9 +64,9 @@ namespace Serilog.Settings.Delegates
             {
                 compiledTransformation = CompileTransformation(returnType, transformation);
             }
-            catch(CompilationErrorException ex)
+            catch(TargetInvocationException ex)
             {
-                throw new ArgumentException($"Destructure.ByTransformingWhere transformation failed to compile.\nTransformation: {transformation}\nException: {ex.Message}");
+                throw new ArgumentException($"Destructure.ByTransformingWhere transformation failed to compile.\nTransformation: {transformation}\nException: {ex.InnerException.Message}");
             }
 
             return loggerConfiguration.ByTransformingWhere(compiledPredicate, compiledTransformation);
@@ -92,16 +92,7 @@ namespace Serilog.Settings.Delegates
                 .MakeGenericMethod(funcType);
 
             // execute EvaluateAsync
-            dynamic evalTask;
-            try
-            {
-                evalTask = evalMethod.Invoke(null, new object[] { transformation, ReflectionHelper.scriptOptions, null, null, null });
-            }
-            catch(TargetInvocationException ex)
-            {
-                throw new ArgumentException($"Destructure transformation failed to compile.\nTransformation: {transformation}\nException: {ex.InnerException.Message}");
-            }
-
+            dynamic evalTask = evalMethod.Invoke(null, new object[] { transformation, ReflectionHelper.scriptOptions, null, null, null });
             dynamic compiledFunc = evalTask.GetAwaiter().GetResult();
 
             return compiledFunc;
