@@ -52,7 +52,7 @@ namespace Serilog.Settings.Delegates
             {
                 compiledPredicate =
                     CSharpScript.EvaluateAsync<Func<Type, bool>>
-                    (predicate, ReflectionHelper.scriptOptions)
+                    (predicate, ReflectionHelper.ScriptOptions)
                     .GetAwaiter().GetResult();
             }
             catch(CompilationErrorException ex)
@@ -92,7 +92,7 @@ namespace Serilog.Settings.Delegates
                 .MakeGenericMethod(funcType);
 
             // execute EvaluateAsync
-            dynamic evalTask = evalMethod.Invoke(null, new object[] { transformation, ReflectionHelper.scriptOptions, null, null, null });
+            dynamic evalTask = evalMethod.Invoke(null, new object[] { transformation, ReflectionHelper.ScriptOptions, null, null, null });
             dynamic compiledFunc = evalTask.GetAwaiter().GetResult();
 
             return compiledFunc;

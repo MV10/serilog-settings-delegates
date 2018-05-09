@@ -18,30 +18,32 @@ namespace Serilog.Settings.Delegates
         /// If IncludeTypes has not been used, this builds a ScriptOptions that references all
         /// loaded assemblies and imports all Namespaces from all loaded assemblies.
         /// </summary>
-        public static ScriptOptions scriptOptions
+        public static ScriptOptions ScriptOptions
         {
             get
             {
                 if(_options == null)
                 {
+                    // Referencing a dynamic assembly (which is most easily seen with xUnit testing) throws
+                    // a System.NotSupportedException: Can't create a metadata reference to a dynamic assembly. 
+                    var assemblies = GetNonDynamicAssemblies(AppDomain.CurrentDomain.GetAssemblies());
                     _options = ScriptOptions.Default
-                        .AddReferences(AppDomain.CurrentDomain.GetAssemblies())
-                        .AddImports(GetAllNamespaces(AppDomain.CurrentDomain.GetAssemblies()));
+                        .AddReferences(assemblies)
+                        .AddImports(GetAllNamespaces(assemblies));
                 }
                 return _options;
             }
         }
 
-        private static List<Assembly> GetAssemblies(IEnumerable<Type> types)
-            => types
-            .Select(t => t.Assembly)
-            .Distinct()
-            .Where(n => n != null).ToList();
+        private static IEnumerable<Assembly> GetNonDynamicAssemblies(IEnumerable<Assembly> assemblies)
+            => assemblies
+            .Where(n => !n.IsDynamic)
+            .ToList();
 
-        private static List<string> GetAllNamespaces(IEnumerable<Assembly> assemblies)
+        private static IEnumerable<string> GetAllNamespaces(IEnumerable<Assembly> assemblies)
             => assemblies.SelectMany(a => GetNamespaces(a)).ToList();
 
-        private static List<string> GetNamespaces(Assembly assembly)
+        private static IEnumerable<string> GetNamespaces(Assembly assembly)
             => assembly.GetTypes()
             .Select(t => t.Namespace)
             .Distinct()

@@ -21,7 +21,7 @@ namespace Serilog.Settings.Delegates
             {
                 compiledPredicate =
                     CSharpScript.EvaluateAsync<Func<LogEvent, bool>>
-                    (exclusionPredicate, ReflectionHelper.scriptOptions)
+                    (exclusionPredicate, ReflectionHelper.ScriptOptions)
                     .GetAwaiter().GetResult();
             }
             catch(CompilationErrorException ex)
@@ -45,7 +45,7 @@ namespace Serilog.Settings.Delegates
             {
                 compiledPredicate =
                     CSharpScript.EvaluateAsync<Func<LogEvent, bool>>
-                    (inclusionPredicate, ReflectionHelper.scriptOptions)
+                    (inclusionPredicate, ReflectionHelper.ScriptOptions)
                     .GetAwaiter().GetResult();
             }
             catch(CompilationErrorException ex)
