@@ -35,7 +35,7 @@ This package targets .NET Standard 2.0, meaning it is compatible with most recen
 _Serilog.Settings.Configuration_
 
 - Filtering is supported with any current NuGet package.
-- Destructuring is supported with NuGet packages _**newer than**_ `3.0.0-dev-00108`.
+- Destructuring is supported with NuGet packages equal to or newer than [`3.0.0-dev-00111`](https://www.nuget.org/packages/Serilog.Settings.Configuration/3.0.0-dev-00111).
 
 _Serilog.Settings.AppSettings_
 
