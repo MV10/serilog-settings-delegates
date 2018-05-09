@@ -71,8 +71,13 @@ namespace Sample
 
 
             Log.CloseAndFlush();
-            Console.WriteLine($"\nPress any key...");
-            Console.ReadKey();
+
+            // TravisCI build adds this switch to verify the program runs without needing input
+            if(!args.Contains("--nopause"))
+            {
+                Console.WriteLine($"\nPress any key...");
+                Console.ReadKey();
+            }
         }
 
         static void TransformationExamples_GenerateLogs()
