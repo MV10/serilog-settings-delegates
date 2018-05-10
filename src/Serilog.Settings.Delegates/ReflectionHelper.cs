@@ -28,7 +28,10 @@ namespace Serilog.Settings.Delegates
                     // a System.NotSupportedException: Can't create a metadata reference to a dynamic assembly. 
                     var assemblies = GetNonDynamicAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
-                    Console.WriteLine("******************** TEST");
+                    Console.WriteLine("\n------------------------------------------------\n");
+                    foreach(var a in assemblies)
+                        Console.WriteLine(a.FullName);
+                    Console.WriteLine("\n------------------------------------------------\n");
 
                     _options = ScriptOptions.Default
                         .AddReferences(assemblies)
