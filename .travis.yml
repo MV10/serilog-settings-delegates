@@ -1,0 +1,14 @@
+language: csharp
+
+before_install:
+  - chmod +x build.sh
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      dotnet: 2.1.4
+      group: edge
+script:
+  - ./build.sh
