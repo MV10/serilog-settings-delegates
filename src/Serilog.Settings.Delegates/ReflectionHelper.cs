@@ -67,6 +67,7 @@ namespace Serilog.Settings.Delegates
                     //&& !n.FullName.StartsWith("testhost", StringComparison.InvariantCultureIgnoreCase)
                     //&& !n.FullName.StartsWith("WindowsBase", StringComparison.InvariantCultureIgnoreCase)
                     //&& !n.FullName.StartsWith("xunit", StringComparison.InvariantCultureIgnoreCase))
+                    )
                 .ToList();
         }
 
