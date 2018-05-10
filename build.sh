@@ -8,11 +8,10 @@ for path in src/**/*.csproj; do
     dotnet build -f netstandard2.0 -c Release ${path}
 done
 
-cd example/Sample/
-dotnet build -f netcoreapp2.0 -c Release 
-dotnet bin/Release/netcoreapp2.0/Sample.dll --nopause
-cd ../..
-
 for path in test/*.Tests/*.csproj; do
     dotnet test -f netcoreapp2.0  -c Release ${path}
 done
+
+#cd example/Sample/
+#dotnet build -f netcoreapp2.0 -c Release 
+#dotnet bin/Release/netcoreapp2.0/Sample.dll --nopause

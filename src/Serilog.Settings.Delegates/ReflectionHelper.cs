@@ -27,6 +27,9 @@ namespace Serilog.Settings.Delegates
                     // Referencing a dynamic assembly (which is most easily seen with xUnit testing) throws
                     // a System.NotSupportedException: Can't create a metadata reference to a dynamic assembly. 
                     var assemblies = GetNonDynamicAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+                    Console.WriteLine("******************** TEST");
+
                     _options = ScriptOptions.Default
                         .AddReferences(assemblies)
                         .AddImports(GetAllNamespaces(assemblies));
