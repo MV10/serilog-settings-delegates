@@ -28,10 +28,10 @@ namespace Serilog.Settings.Delegates
 
                     // It is useful to dump the assemblies to the console when only unit
                     // tests fail in the Linux container during Travis-CI builds.
-                    //Console.WriteLine("\n------------------------------------------------\n");
-                    //foreach(var a in assemblies)
-                    //    Console.WriteLine(a.FullName);
-                    //Console.WriteLine("\n------------------------------------------------\n");
+                    Console.WriteLine("\n------------------------------------------------\n");
+                    foreach(var a in assemblies)
+                        Console.WriteLine(a.FullName);
+                    Console.WriteLine("\n------------------------------------------------\n");
 
                     _options = ScriptOptions.Default
                         .AddReferences(assemblies)
