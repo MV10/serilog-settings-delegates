@@ -47,7 +47,7 @@ namespace Serilog.Settings.Delegates
             // message "Can't create a metadata reference to a dynamic assembly" running xUnit
             // tests in Visual Studio or Windows.
 
-            // Microsoft.Win32
+            // Microsoft.*
             // Exclude ??? assemblies which throws a System.Reflection.ReflectionTypeLoadException
             // with the message "Unable to load one or more of the requested types" when reading
             // xunit.core namespaces during unit testing on Linux in the Travis-CI process.
@@ -60,6 +60,8 @@ namespace Serilog.Settings.Delegates
                 assemblies
                 .Where(n =>
                     !n.IsDynamic
+                    && !n.FullName.StartsWith("Microsoft.TestPlatform", StringComparison.InvariantCultureIgnoreCase)
+                    && !n.FullName.StartsWith("Microsoft.VisualStudio", StringComparison.InvariantCultureIgnoreCase)
                     && !n.FullName.StartsWith("Microsoft.Win32", StringComparison.InvariantCultureIgnoreCase)
                     && !n.FullName.StartsWith("SOS.NETCore", StringComparison.InvariantCultureIgnoreCase)
                     && !n.FullName.StartsWith("testhost", StringComparison.InvariantCultureIgnoreCase)
