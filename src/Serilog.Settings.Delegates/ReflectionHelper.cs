@@ -28,10 +28,10 @@ namespace Serilog.Settings.Delegates
 
                     // It is useful to dump the assemblies to the console when only unit
                     // tests fail in the Linux container during Travis-CI builds.
-                    Console.WriteLine("\n------------------------------------------------\n");
-                    foreach(var a in assemblies)
-                        Console.WriteLine(a.FullName);
-                    Console.WriteLine("\n------------------------------------------------\n");
+                    //Console.WriteLine("\n------------------------------------------------\n");
+                    //foreach(var a in assemblies)
+                    //    Console.WriteLine(a.FullName);
+                    //Console.WriteLine("\n------------------------------------------------\n");
 
                     _options = ScriptOptions.Default
                         .AddReferences(assemblies)
@@ -47,14 +47,19 @@ namespace Serilog.Settings.Delegates
             // message "Can't create a metadata reference to a dynamic assembly" running xUnit
             // tests in Visual Studio or Windows.
 
-            // Exclude xUnit assemblies which throws a System.Reflection.ReflectionTypeLoadException
+            // WindowsBase?
+            // Exclude ??? assemblies which throws a System.Reflection.ReflectionTypeLoadException
             // with the message "Unable to load one or more of the requested types" when reading
             // xunit.core namespaces during unit testing on Linux in the Travis-CI process.
+
+            // Exclude testing-specific assemblies (xUnit, Microsoft.VisualStudio.*, and
+            // Microsoft.TestPlatform)
 
             return
                 assemblies
                 .Where(n =>
                     !n.IsDynamic
+                    && !n.FullName.StartsWith("WindowsBase", StringComparison.InvariantCultureIgnoreCase)
                     && !n.FullName.StartsWith("xunit", StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
         }
