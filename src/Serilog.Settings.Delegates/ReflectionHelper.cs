@@ -48,13 +48,13 @@ namespace Serilog.Settings.Delegates
             // tests in Visual Studio or Windows.
 
             // Microsoft.*
-            // Exclude ??? assemblies which throws a System.Reflection.ReflectionTypeLoadException
-            // with the message "Unable to load one or more of the requested types" when reading
-            // xunit.core namespaces during unit testing on Linux in the Travis-CI process.
+            // Exclude Microsoft.TestPlatform and Microsoft.VisualStudio assemblies which throw
+            // a System.Reflection.ReflectionTypeLoadException with the message "Unable to load
+            // one or more of the requested types" when reading namespaces during unit testing
+            // on Linux during the Travis-CI build process.
 
-            // Exclude testing-specific assemblies (xUnit, Microsoft.VisualStudio.*, and
-            // Microsoft.TestPlatform) and Linux Travis-CI assemblies (WindowsBase, testhost,
-            // SOS.NETCore
+            // Exclude xUnit testing assemblies and Linux Travis-CI assemblies (WindowsBase,
+            // testhost, SOS.NETCore
 
             return
                 assemblies
@@ -62,11 +62,11 @@ namespace Serilog.Settings.Delegates
                     !n.IsDynamic
                     && !n.FullName.StartsWith("Microsoft.TestPlatform", StringComparison.InvariantCultureIgnoreCase)
                     && !n.FullName.StartsWith("Microsoft.VisualStudio", StringComparison.InvariantCultureIgnoreCase)
-                    && !n.FullName.StartsWith("Microsoft.Win32", StringComparison.InvariantCultureIgnoreCase)
-                    && !n.FullName.StartsWith("SOS.NETCore", StringComparison.InvariantCultureIgnoreCase)
-                    && !n.FullName.StartsWith("testhost", StringComparison.InvariantCultureIgnoreCase)
-                    && !n.FullName.StartsWith("WindowsBase", StringComparison.InvariantCultureIgnoreCase)
-                    && !n.FullName.StartsWith("xunit", StringComparison.InvariantCultureIgnoreCase))
+                    //&& !n.FullName.StartsWith("Microsoft.Win32", StringComparison.InvariantCultureIgnoreCase)
+                    //&& !n.FullName.StartsWith("SOS.NETCore", StringComparison.InvariantCultureIgnoreCase)
+                    //&& !n.FullName.StartsWith("testhost", StringComparison.InvariantCultureIgnoreCase)
+                    //&& !n.FullName.StartsWith("WindowsBase", StringComparison.InvariantCultureIgnoreCase)
+                    //&& !n.FullName.StartsWith("xunit", StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
         }
 
