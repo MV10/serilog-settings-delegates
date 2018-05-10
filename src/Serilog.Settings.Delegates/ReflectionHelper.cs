@@ -24,14 +24,14 @@ namespace Serilog.Settings.Delegates
             {
                 if(_options == null)
                 {
-                    // Referencing a dynamic assembly (which is most easily seen with xUnit testing) throws
-                    // a System.NotSupportedException: Can't create a metadata reference to a dynamic assembly. 
-                    var assemblies = GetNonDynamicAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+                    var assemblies = GetSafeAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
-                    Console.WriteLine("\n------------------------------------------------\n");
-                    foreach(var a in assemblies)
-                        Console.WriteLine(a.FullName);
-                    Console.WriteLine("\n------------------------------------------------\n");
+                    // It is useful to dump the assemblies to the console when only unit
+                    // tests fail in the Linux container during Travis-CI builds.
+                    //Console.WriteLine("\n------------------------------------------------\n");
+                    //foreach(var a in assemblies)
+                    //    Console.WriteLine(a.FullName);
+                    //Console.WriteLine("\n------------------------------------------------\n");
 
                     _options = ScriptOptions.Default
                         .AddReferences(assemblies)
@@ -41,10 +41,23 @@ namespace Serilog.Settings.Delegates
             }
         }
 
-        private static IEnumerable<Assembly> GetNonDynamicAssemblies(IEnumerable<Assembly> assemblies)
-            => assemblies
-            .Where(n => !n.IsDynamic)
-            .ToList();
+        private static IEnumerable<Assembly> GetSafeAssemblies(IEnumerable<Assembly> assemblies)
+        {
+            // Exclude dynamic assemblies which throw a System.NotSupportedException with the
+            // message "Can't create a metadata reference to a dynamic assembly" running xUnit
+            // tests in Visual Studio or Windows.
+
+            // Exclude xUnit assemblies which throws a System.Reflection.ReflectionTypeLoadException
+            // with the message "Unable to load one or more of the requested types" when reading
+            // xunit.core namespaces during unit testing on Linux in the Travis-CI process.
+
+            return
+                assemblies
+                .Where(n =>
+                    !n.IsDynamic
+                    && !n.FullName.StartsWith("xunit", StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+        }
 
         private static IEnumerable<string> GetAllNamespaces(IEnumerable<Assembly> assemblies)
             => assemblies.SelectMany(a => GetNamespaces(a)).ToList();
