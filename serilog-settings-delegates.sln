@@ -10,11 +10,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{1A19D5BC-EADB-4E21-BE22-A8D02285F8B4}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.travis.yml = .travis.yml
+		build.sh = build.sh
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Settings.Delegates.Tests", "test\Serilog.Settings.Delegates.Tests\Serilog.Settings.Delegates.Tests.csproj", "{4E2B9BAE-B0FF-4ACC-ABA8-C3F5743CD8F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Settings.Delegates.Tests", "test\Serilog.Settings.Delegates.Tests\Serilog.Settings.Delegates.Tests.csproj", "{4E2B9BAE-B0FF-4ACC-ABA8-C3F5743CD8F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

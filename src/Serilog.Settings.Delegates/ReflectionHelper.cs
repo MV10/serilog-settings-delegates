@@ -24,9 +24,15 @@ namespace Serilog.Settings.Delegates
             {
                 if(_options == null)
                 {
-                    // Referencing a dynamic assembly (which is most easily seen with xUnit testing) throws
-                    // a System.NotSupportedException: Can't create a metadata reference to a dynamic assembly. 
-                    var assemblies = GetNonDynamicAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+                    var assemblies = GetSafeAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+                    // It is useful to dump the assemblies to the console when only unit
+                    // tests fail in the Linux container during Travis-CI builds.
+                    //Console.WriteLine("\n------------------------------------------------\n");
+                    //foreach(var a in assemblies)
+                    //    Console.WriteLine(a.FullName);
+                    //Console.WriteLine("\n------------------------------------------------\n");
+
                     _options = ScriptOptions.Default
                         .AddReferences(assemblies)
                         .AddImports(GetAllNamespaces(assemblies));
@@ -35,10 +41,25 @@ namespace Serilog.Settings.Delegates
             }
         }
 
-        private static IEnumerable<Assembly> GetNonDynamicAssemblies(IEnumerable<Assembly> assemblies)
-            => assemblies
-            .Where(n => !n.IsDynamic)
-            .ToList();
+        private static IEnumerable<Assembly> GetSafeAssemblies(IEnumerable<Assembly> assemblies)
+        {
+            // Exclude dynamic assemblies which throw a System.NotSupportedException with the
+            // message "Can't create a metadata reference to a dynamic assembly" running xUnit
+            // tests in Visual Studio or Windows.
+
+            // Exclude Microsoft.TestPlatform and Microsoft.VisualStudio assemblies which throw
+            // a System.Reflection.ReflectionTypeLoadException with the message "Unable to load
+            // one or more of the requested types" when reading namespaces during unit testing
+            // on Linux during the Travis-CI build process.
+
+            return
+                assemblies
+                .Where(n =>
+                    !n.IsDynamic
+                    && !n.FullName.StartsWith("Microsoft.TestPlatform", StringComparison.InvariantCultureIgnoreCase)
+                    && !n.FullName.StartsWith("Microsoft.VisualStudio", StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+        }
 
         private static IEnumerable<string> GetAllNamespaces(IEnumerable<Assembly> assemblies)
             => assemblies.SelectMany(a => GetNamespaces(a)).ToList();
