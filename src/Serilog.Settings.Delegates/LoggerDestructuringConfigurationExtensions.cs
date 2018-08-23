@@ -7,8 +7,18 @@ using Serilog.Configuration;
 
 namespace Serilog.Settings.Delegates
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class LoggerDestructuringConfigurationExtensions
     {
+        /// <summary>
+        /// Configure the logger with a transformation delegate applied to all log entries.
+        /// </summary>
+        /// <param name="loggerConfiguration">The extension target</param>
+        /// <param name="returnType">Result of the transformation</param>
+        /// <param name="transformation">Expression to apply to all log entires</param>
+        /// <returns></returns>
         public static LoggerConfiguration ByTransforming(
             this LoggerDestructuringConfiguration loggerConfiguration,
             string returnType,
@@ -33,6 +43,14 @@ namespace Serilog.Settings.Delegates
             return loggerConfiguration.ByTransforming(compiledTransformation);
         }
 
+        /// <summary>
+        /// Configure the logger with a transformation delegate using a predicate to filter what gets transformed.
+        /// </summary>
+        /// <param name="loggerConfiguration">The extension target</param>
+        /// <param name="predicate">Matches are selected for transformation</param>
+        /// <param name="returnType">Result of the transformation</param>
+        /// <param name="transformation">Expression to apply to log entries selected by the predicate</param>
+        /// <returns></returns>
         public static LoggerConfiguration ByTransformingWhere(
             this LoggerDestructuringConfiguration loggerConfiguration,
             string predicate,
