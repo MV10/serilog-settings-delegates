@@ -1,7 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Description>Delegate support for Serilog configuration providers.</Description>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <Authors>Serilog Contributors</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Serilog.Settings.Delegates</AssemblyName>
+    <SignAssembly>false</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>Serilog.Settings.Delegates</PackageId>
+    <PackageTags>serilog</PackageTags>
+    <PackageIconUrl>https://serilog.net/images/serilog-community-nuget.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/mv10/serilog-settings-delegates</PackageProjectUrl>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <RootNamespace>Serilog</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

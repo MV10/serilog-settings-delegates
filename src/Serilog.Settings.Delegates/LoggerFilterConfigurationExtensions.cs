@@ -6,8 +6,17 @@ using Serilog.Events;
 
 namespace Serilog.Settings.Delegates
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class LoggerFilterConfigurationExtensions
     {
+        /// <summary>
+        /// Removes any log entry matching the predicate.
+        /// </summary>
+        /// <param name="loggerFilterConfiguration">The extension target</param>
+        /// <param name="exclusionPredicate">An expression defining what to exclude</param>
+        /// <returns></returns>
         public static LoggerConfiguration ByExcluding(
             this LoggerFilterConfiguration loggerFilterConfiguration, 
             string exclusionPredicate)
@@ -32,6 +41,12 @@ namespace Serilog.Settings.Delegates
             return loggerFilterConfiguration.ByExcluding(compiledPredicate);
         }
 
+        /// <summary>
+        /// Filters out all log entries except those matching the predicate.
+        /// </summary>
+        /// <param name="loggerFilterConfiguration">The extension target</param>
+        /// <param name="inclusionPredicate">An expression defining what to include</param>
+        /// <returns></returns>
         public static LoggerConfiguration ByIncludingOnly(
             this LoggerFilterConfiguration loggerFilterConfiguration, 
             string inclusionPredicate)
