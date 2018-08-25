@@ -194,13 +194,13 @@ namespace Sample
         static ILogger consoleOnlyLogger;
 
         static string elapsed = null;
+    }
 
-        class Account
-        {
-            public int id { get; set; }
-            public string Username { get; set; }
-            public string Password { get; set; }
-            public string AccountType { get; set; }
-        }
+    public class Account
+    {
+        public int id { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string AccountType { get; set; }
     }
 }
