@@ -7,6 +7,10 @@ build_script:
 test: off
 artifacts:
 - path: artifacts/Serilog.*.nupkg
+only_commits:
+  files:
+    - Serilog.Settings.Delegates.sln
+    - src/Serilog.Settings.Delegates/
 deploy:
 - provider: NuGet
   api_key:
