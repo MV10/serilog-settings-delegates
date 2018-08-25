@@ -1,8 +1,8 @@
-# Serilog.Settings.Delegates
+# Serilog.Settings.Delegates [![Build status](https://ci.appveyor.com/api/projects/status/s84mvw8yx6gja024?svg=true)](https://ci.appveyor.com/project/MV10/serilog-settings-delegates)  [![NuGet](https://img.shields.io/nuget/v/Serilog.Settings.Delegates.svg)](https://nuget.org/packages/Serilog.Settings.Delegates)
 
-A Serilog extension that allows configuration packages to create `Filter` and `Destructure` delegates from configuration data, such as using _Serilog.Settings.Configuration_ to read `appsettings.json`.
+A Serilog extension that allows you to filter and transform log entries with snippets of code stored in configuration. More specifically, it extends configuration packages such as _Serilog.Settings.Configuration_ to accept `Filter` and `Destructure` delegates that could be stored in config files like `appsettings.json` or even environment variables.
 
-Four delegate-based methods are available.
+Four methods are added to the root `Serilog` configuration key:
 
 - `Filter.ByIncludingOnly(`_`inclusionPredicate`_`)`
 - `Filter.ByExcluding(`_`exclusionPredicate`_`)`
@@ -11,14 +11,31 @@ Four delegate-based methods are available.
 
 All arguments are string values because they are intended to be populated from configuration data. The sample application in this repository demonstrates all methods both as code-based configuration (which would be of limited usefulness in practice) as well as loading various JSON configuration files.
 
+## Serilog and .NET Compatibility
+
+_Serilog.Settings.Configuration_
+
+- Filter is supported with any current version
+- Destructure requires version [`3.0.0-dev-00112`](https://www.nuget.org/packages/Serilog.Settings.Configuration/3.0.0-dev-00112) or newer
+
+_Serilog.Settings.AppSettings_
+
+- Unknown, not yet tested (please PR a README update if you know!)
+
+_.NET Standard 2.0_
+
+- .NET Core 2.x
+- ASP.NET Core 2.x
+- .NET Framework 6+
+
 ## Delegate Syntax
 
-The syntax of delegates loaded through configuration is exactly as you'd write them in C# source. This includes lambda expressions, references to static methods, and so on:
+The syntax of configuration delegates is exactly as you'd write them in C# source. This includes lambda expressions, references to static methods, and so on:
 
 - `n => new { ... }`
 - `Matching.WithProperty<string>("Word", w => w.Equals("klaatu"))`
 
-Of course, you must respect the syntax of the configuration source you're using, so that second example would require escaping the inner quotation marks in a JSON configuration file:
+Of course, you must respect the rules of the configuration source you're using, so that second example would require escaping the inner quotation marks in a JSON configuration file:
 
 - `"exclusionPredicate": "Matching.WithProperty<string>(\"Word\", w => w.Equals(\"klaatu\"))"`
 
@@ -27,19 +44,6 @@ Of course, you must respect the syntax of the configuration source you're using,
 The destructure methods require a `returnType` argument. Use the fully-qualified name of the target type (i.e. namespace and type name). For example, the `Account` class defined in the `Sample` namespace in the repository's sample code is referenced as `Sample.Account`.
 
 Due to language limitations, it is not possible to specify `dynamic` as the `returnType` because it is not actually a type, even though it's possible to write code using the `dynamic` keyword in place of a generic type. For example, in code you can write `.Destrcture.ByTransforming<dynamic>(...)` and it will compile and run, but you cannot express this through reflection, which is used to represent the `returnType` named by configuration.
-
-## Compatibility
-
-This package targets .NET Standard 2.0, meaning it is compatible with most recent .NET Framework releases as well as .NET Core 2.x and ASP.NET Core 2.x.
-
-_Serilog.Settings.Configuration_
-
-- Filtering is supported with any current NuGet package.
-- Destructuring is supported with NuGet packages _**newer than**_ [`3.0.0-dev-00111`](https://www.nuget.org/packages/Serilog.Settings.Configuration/3.0.0-dev-00111).
-
-_Serilog.Settings.AppSettings_
-
-- Unknown, not yet tested (please PR a README update if you know!)
 
 ## Initialization Overhead
 
