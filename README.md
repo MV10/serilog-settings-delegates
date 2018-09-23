@@ -26,7 +26,7 @@ _.NET Standard 2.0_
 
 - .NET Core 2.x
 - ASP.NET Core 2.x
-- .NET Framework 6+
+- .NET Framework 4.6+
 
 ## Delegate Syntax
 
